@@ -1,47 +1,52 @@
 import bcrypt from "bcryptjs";
 import User, { IUser } from "../models/User";
 import { handleError, handleErrorCatch } from "../utils/errorHandler";
+import { ApiResponse } from "../types";
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ApiResponse<Partial<IUser>>> => {
   try {
     const body = (await readBody(event)) as IUser;
 
     if (!body) {
-      return handleError(event,400, " Kindly Provide Some Inputs");
+      return handleError(event, 400, " Kindly Provide Some Inputs");
     }
     const { name, email, password, age, is_married } = body;
 
     if (!name || !email || !password) {
-      return handleError(event,400, "Name | Email | password  are required fields");
+      return handleError(
+        event,
+        400,
+        "Name | Email | password  are required fields",
+      );
     }
 
     if (typeof name !== "string" || name.trim().length == 0) {
-      return handleError(event,400, "kindly provide valid name ");
+      return handleError(event, 400, "kindly provide valid name ");
     }
 
     if (typeof email !== "string" || email.trim().length == 0) {
-      return handleError(event,400, "kindly provide valid email ");
+      return handleError(event, 400, "kindly provide valid email ");
     }
 
     if (typeof password !== "string" || password.trim().length == 0) {
-      return handleError(event,400, "kindly provide valid password ");
+      return handleError(event, 400, "kindly provide valid password ");
     }
 
     const check = await User.findOne({ email: email });
 
     if (check) {
       console.log("calling");
-      return handleError(event,400, "Email already exists");
+      return handleError(event, 400, "Email already exists");
     }
 
     if (age && (typeof age !== "number" || age < 1)) {
-      return handleError(event,400, "Kindly provide valid age");
+      return handleError(event, 400, "Kindly provide valid age");
     }
     if (
       is_married &&
       (typeof is_married !== "boolean" || ![true, false].includes(is_married))
     ) {
-      return handleError(event,400, "Kindly provide valid is_married");
+      return handleError(event, 400, "Kindly provide valid is_married");
     }
     const hashpassword = await bcrypt.hash(password, 10);
 
@@ -62,15 +67,15 @@ export default defineEventHandler(async (event) => {
     };
 
     return {
-
-        
       status: true,
-      user: data,
+      statusCode: 201,
+      message: "User registered successfully",
+      data: data,
     };
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
 
-    console.error(errorMessage)
+    console.error(errorMessage);
 
     return handleErrorCatch(500, errorMessage);
   }

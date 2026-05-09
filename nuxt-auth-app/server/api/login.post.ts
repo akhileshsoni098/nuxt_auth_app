@@ -1,10 +1,11 @@
 import bcrypt from "bcryptjs";
-import User from "../models/User";
+import User, { IUser } from "../models/User";
 import { handleErrorCatch } from "../utils/errorHandler";
 
 import { generateToken } from "../utils/generateToken";
+import { ApiResponse } from "../types";
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ApiResponse<Partial<IUser>>> => {
   try {
     const body = await readBody(event);
 
