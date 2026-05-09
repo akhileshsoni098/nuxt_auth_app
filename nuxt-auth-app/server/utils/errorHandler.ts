@@ -15,7 +15,6 @@ export const handleError = (
   message: string,
 ) => {
   setResponseStatus(event, statusCode);
-
   return {
     status: false,
     statusCode,

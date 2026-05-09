@@ -41,6 +41,7 @@ export const getUserFromToken = async (event: unknown) => {
     const user = await User.findById(decoded._id).select("-password");
 
     return user;
+    
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
 

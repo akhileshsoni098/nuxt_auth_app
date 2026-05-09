@@ -62,7 +62,9 @@ export default defineEventHandler(async (event) => {
     };
 
     return {
-      success: true,
+
+        
+      status: true,
       user: data,
     };
   } catch (err: unknown) {
