@@ -13,6 +13,7 @@ export const connectDB = async () => {
 
   try {
     await mongoose.connect(MONGO_URI);
+
     isConnected = true;
 
     console.log("mongoDB connected");
@@ -24,7 +25,7 @@ export const connectDB = async () => {
     throw createError({
       statusCode: 500,
       statusMessage: `Database Connection Failed: ${errorMessage}`,
-      fatal: true,
+      fatal: true, // direct err page pr client side se redirect kr dega
     });
   }
 };
